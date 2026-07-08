@@ -72,9 +72,19 @@ npm run package   # model-usage-display-x.y.z.vsix が生成される
 - `Model Usage: 詳細を表示` — ダッシュボードを開く（ステータスバークリックと同じ）
 - `Model Usage: 今すぐ更新` — 手動更新
 
+## 対応エディタ
+
+Antigravity IDE 本体のほか、**通常のVSCode等のVSCode系エディタにもインストールできる**（VSCode 1.74以降）。クォータの取得元はエディタ自身ではなく「マシン上で動いているAntigravityのLanguage Serverプロセス」なので、どのエディタから使う場合も **Antigravity IDE が起動していることが前提**。
+
+VSCodeへのインストール例:
+
+```sh
+"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" --install-extension model-usage-display-x.y.z.vsix
+```
+
 ## 制約・免責
 
-- Antigravity IDE が起動している必要がある（IDE内のLanguage Serverに接続するため）
+- Antigravity IDE が起動している必要がある（IDE内のLanguage Serverに接続するため。拡張をVSCode側に入れた場合も同様）
 - macOS のみ動作確認済み（ポート検出に `ps` / `lsof` を使用。Linux/Windowsは未対応）
 - Antigravity の**非公開の内部APIに依存**しているため、IDEのアップデートで予告なく動かなくなる可能性がある。本拡張はGoogle非公式の個人プロジェクトであり、無保証（MITライセンス）
 - 通信はすべて `127.0.0.1`（ローカルのLanguage Server）に対してのみ行う。外部サーバーへの送信・テレメトリは一切ない

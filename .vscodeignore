@@ -1,5 +1,6 @@
 .vscode/**
 .claude/**
+images/icon.svg
 src/**
 node_modules/**
 tsconfig.json

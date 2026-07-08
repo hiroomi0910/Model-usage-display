@@ -1,0 +1,42 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#232a3b"/>
+      <stop offset="100%" stop-color="#141926"/>
+    </linearGradient>
+    <linearGradient id="needle" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e8edf7"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 背景 -->
+  <rect x="8" y="8" width="240" height="240" rx="52" fill="url(#bg)"/>
+  <rect x="8" y="8" width="240" height="240" rx="52" fill="none" stroke="#3b465e" stroke-width="2"/>
+
+  <!-- ゲージアーク（E側=赤 → 黄 → F側=緑） -->
+  <path d="M 50.9 164.0 A 82 82 0 0 1 78.7 70.5" fill="none" stroke="#ef4444" stroke-width="17" stroke-linecap="round"/>
+  <path d="M 78.7 70.5 A 82 82 0 0 1 176.2 69.7" fill="none" stroke="#facc15" stroke-width="17"/>
+  <path d="M 176.2 69.7 A 82 82 0 0 1 205.1 164.0" fill="none" stroke="#4ade80" stroke-width="17" stroke-linecap="round"/>
+
+  <!-- 目盛り -->
+  <g stroke="#aab4c8" stroke-width="3" stroke-linecap="round" opacity="0.85">
+    <line x1="66.2" y1="158.5" x2="75.6" y2="155.1"/>
+    <line x1="74.0" y1="98.2"  x2="81.7" y2="104.6"/>
+    <line x1="128"  y1="70.0"  x2="128"  y2="80.0"/>
+    <line x1="182.0" y1="98.2" x2="174.3" y2="104.6"/>
+    <line x1="189.8" y1="158.5" x2="180.4" y2="155.1"/>
+  </g>
+
+  <!-- E / F ラベル（燃料計） -->
+  <text x="47" y="196" font-family="Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#8f9bb3" text-anchor="middle">E</text>
+  <text x="209" y="196" font-family="Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#8f9bb3" text-anchor="middle">F</text>
+
+  <!-- 針（残量70%付近を指す） -->
+  <polygon points="123.5,139 132.5,139 175.2,87.1 169.5,81.6" fill="url(#needle)"/>
+  <circle cx="128" cy="136" r="12" fill="#e8edf7"/>
+  <circle cx="128" cy="136" r="6" fill="#141926"/>
+
+  <!-- AI ラベル -->
+  <text x="128" y="210" font-family="Helvetica, Arial, sans-serif" font-size="40" font-weight="800" fill="#7cc4ff" text-anchor="middle" letter-spacing="2">AI</text>
+</svg>

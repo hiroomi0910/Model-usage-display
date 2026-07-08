@@ -37,14 +37,14 @@ export class QuotaStatusBar implements vscode.Disposable {
     const models = visibleModels(update.snapshot.models);
     const lowest = lowestModel(models);
     if (!lowest) {
-      this.item.text = "$(dashboard) Models: -";
+      this.item.text = "$(zap) Models: -";
       this.item.backgroundColor = undefined;
       this.item.tooltip = "表示対象のモデルがありません";
       return;
     }
 
     const pct = percent(lowest.remainingFraction);
-    this.item.text = `$(dashboard) ${lowest.label} ${pct}%`;
+    this.item.text = `$(zap) ${lowest.label} ${pct}%`;
     if (pct <= dangerPct) {
       this.item.backgroundColor = new vscode.ThemeColor("statusBarItem.errorBackground");
     } else if (pct <= warnPct) {
