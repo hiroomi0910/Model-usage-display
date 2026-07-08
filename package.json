@@ -6,6 +6,18 @@
   "publisher": "hiroomi",
   "private": true,
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hiroomi0910/Model-usage-display.git"
+  },
+  "keywords": [
+    "antigravity",
+    "quota",
+    "usage",
+    "statusbar",
+    "gemini",
+    "claude"
+  ],
   "engines": {
     "vscode": "^1.74.0"
   },

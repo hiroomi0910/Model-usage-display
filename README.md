@@ -2,6 +2,8 @@
 
 Antigravity IDE の各AIモデル（Gemini / Claude / GPT系）のクォータ残量とリセットまでの時間を、ステータスバーに常時表示するVSCode拡張。
 
+*A VSCode extension that shows per-model quota (remaining % and reset time) for Antigravity IDE in the status bar.*
+
 ## 機能
 
 - **ステータスバー**: 最も残量が少ないモデルの残量%を常時表示。ホバーで全モデルの一覧
@@ -36,13 +38,23 @@ Antigravity IDE が内部で起動している Language Server に直接接続�
 
 ## インストール
 
+### VSIX から（推奨）
+
+[Releases](../../releases) から `.vsix` をダウンロードし、Antigravity IDE で: 拡張機能ビュー → `…` メニュー → **VSIXからのインストール** → ダウンロードした `.vsix` を選択。
+
+またはCLIで:
+
+```sh
+"/Applications/Antigravity IDE.app/Contents/Resources/app/bin/antigravity-ide" --install-extension model-usage-display-x.y.z.vsix
+```
+
+### ソースからビルド
+
 ```sh
 npm install
 npm run compile
-npm run package   # model-usage-display-0.1.0.vsix が生成される
+npm run package   # model-usage-display-x.y.z.vsix が生成される
 ```
-
-Antigravity IDE で: 拡張機能ビュー → `…` メニュー → **VSIXからのインストール** → 生成された `.vsix` を選択。
 
 ## 設定
 
@@ -60,14 +72,23 @@ Antigravity IDE で: 拡張機能ビュー → `…` メニュー → **VSIXか�
 - `Model Usage: 詳細を表示` — ダッシュボードを開く（ステータスバークリックと同じ）
 - `Model Usage: 今すぐ更新` — 手動更新
 
-## 制約
+## 制約・免責
 
 - Antigravity IDE が起動している必要がある（IDE内のLanguage Serverに接続するため）
-- macOS のみ動作確認済み（ポート検出に `ps` / `lsof` を使用）
-- Antigravity の内部実装依存のため、アップデートで取得方法が壊れる可能性あり
+- macOS のみ動作確認済み（ポート検出に `ps` / `lsof` を使用。Linux/Windowsは未対応）
+- Antigravity の**非公開の内部APIに依存**しているため、IDEのアップデートで予告なく動かなくなる可能性がある。本拡張はGoogle非公式の個人プロジェクトであり、無保証（MITライセンス）
+- 通信はすべて `127.0.0.1`（ローカルのLanguage Server）に対してのみ行う。外部サーバーへの送信・テレメトリは一切ない
+
+## プライバシー
+
+この拡張が扱うのはLanguage Serverが返すクォータ情報（モデル名・残量・リセット時刻）のみ。取得したデータはメモリ上に保持するだけで、ディスク保存・外部送信はしない。
 
 ## 参考にしたOSS
 
 - [antigravity-usage](https://github.com/skainguyen1412/antigravity-usage) — 接続方式（CSRFトークン検出・Connect RPC）
 - [AntigravityQuotaWatcher](https://github.com/wusimpl/AntigravityQuotaWatcher)
 - [antigravity-usage-monitor](https://github.com/tuckiestudio/antigravity-usage-monitor)
+
+## ライセンス
+
+[MIT](LICENSE)
