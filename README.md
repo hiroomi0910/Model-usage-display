@@ -1,8 +1,8 @@
 # Model Usage Display
 
-Antigravity IDE の各AIモデル（Gemini / Claude / GPT系）のクォータ残量とリセットまでの時間を、ステータスバーに常時表示するVSCode拡張。
+Antigravity の各AIモデル（Gemini / Claude / GPT系）のクォータ残量とリセットまでの時間を、ステータスバーに常時表示する拡張。**VSCode・Antigravity IDE をはじめとするVSCode系IDE全般**にインストールできる。
 
-*A VSCode extension that shows per-model quota (remaining % and reset time) for Antigravity IDE in the status bar.*
+*Shows per-model AI quota (remaining % and reset time) of Antigravity in the status bar. Works in VS Code, Antigravity IDE, and other VS Code-based editors.*
 
 ## 機能
 
@@ -27,8 +27,10 @@ Gemini 3.1 Pro
 
 Antigravity IDE が内部で起動している Language Server に直接接続してクォータを取得する（追加ログイン不要・ローカル完結）:
 
-1. `ps` でプロセス一覧から `language_server` を探し `--csrf_token` を抽出
-2. `lsof` でそのプロセスの LISTEN ポートを列挙
+1. プロセス一覧から `language_server` を探し `--csrf_token` を抽出
+   （macOS/Linux: `ps`、Windows: PowerShell `Get-CimInstance`）
+2. そのプロセスの LISTEN ポートを列挙
+   （macOS/Linux: `lsof`、Windows: `netstat`）
 3. 各ポートに `X-Codeium-Csrf-Token` ヘッダー付きで Connect RPC
    `/exa.language_server_pb.LanguageServerService/GetUserStatus` を POST
 
@@ -40,11 +42,18 @@ Antigravity IDE が内部で起動している Language Server に直接接続�
 
 ### VSIX から（推奨）
 
-[Releases](../../releases) から `.vsix` をダウンロードし、Antigravity IDE で: 拡張機能ビュー → `…` メニュー → **VSIXからのインストール** → ダウンロードした `.vsix` を選択。
+[Releases](../../releases) から `.vsix` をダウンロードし、お使いのエディタ（VSCode / Antigravity IDE / その他VSCode系IDE）で: 拡張機能ビュー → `…` メニュー → **VSIXからのインストール** → ダウンロードした `.vsix` を選択。
 
-またはCLIで:
+またはCLIで（`code` の部分は各エディタのCLI名に読み替え）:
 
 ```sh
+code --install-extension model-usage-display-x.y.z.vsix
+```
+
+macOSでCLIがPATHにない場合のフルパス例:
+
+```sh
+"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" --install-extension model-usage-display-x.y.z.vsix
 "/Applications/Antigravity IDE.app/Contents/Resources/app/bin/antigravity-ide" --install-extension model-usage-display-x.y.z.vsix
 ```
 
@@ -72,20 +81,14 @@ npm run package   # model-usage-display-x.y.z.vsix が生成される
 - `Model Usage: 詳細を表示` — ダッシュボードを開く（ステータスバークリックと同じ）
 - `Model Usage: 今すぐ更新` — 手動更新
 
-## 対応エディタ
+## 対応環境
 
-Antigravity IDE 本体のほか、**通常のVSCode等のVSCode系エディタにもインストールできる**（VSCode 1.74以降）。クォータの取得元はエディタ自身ではなく「マシン上で動いているAntigravityのLanguage Serverプロセス」なので、どのエディタから使う場合も **Antigravity IDE が起動していることが前提**。
-
-VSCodeへのインストール例:
-
-```sh
-"/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" --install-extension model-usage-display-x.y.z.vsix
-```
+- **エディタ**: VSCode 1.74以降、および Antigravity IDE 等のVSCode系IDE。クォータの取得元はエディタ自身ではなく「マシン上で動いているAntigravityのLanguage Serverプロセス」なので、どのエディタから使う場合も **Antigravity IDE が起動していることが前提**
+- **OS**: macOS（動作確認済み）、Windows（v1.1.0で対応）。Linuxは実装済みだが未検証
 
 ## 制約・免責
 
-- Antigravity IDE が起動している必要がある（IDE内のLanguage Serverに接続するため。拡張をVSCode側に入れた場合も同様）
-- macOS のみ動作確認済み（ポート検出に `ps` / `lsof` を使用。Linux/Windowsは未対応）
+- Antigravity IDE が起動している必要がある（IDE内のLanguage Serverに接続するため。拡張を他のエディタに入れた場合も同様）
 - Antigravity の**非公開の内部APIに依存**しているため、IDEのアップデートで予告なく動かなくなる可能性がある。本拡張はGoogle非公式の個人プロジェクトであり、無保証（MITライセンス）
 - 通信はすべて `127.0.0.1`（ローカルのLanguage Server）に対してのみ行う。外部サーバーへの送信・テレメトリは一切ない
 

@@ -2,8 +2,10 @@
  * Antigravity Language Server への接続とクォータ取得。
  *
  * 仕組み（antigravity-usage / AntigravityQuotaWatcher の実装を参考）:
- *  1. ps でプロセス一覧から language_server を探し --csrf_token を抜き出す
- *  2. lsof でそのプロセスの LISTEN ポートを列挙
+ *  1. プロセス一覧から language_server を探し --csrf_token を抜き出す
+ *     （macOS/Linux: ps、Windows: PowerShell の Get-CimInstance）
+ *  2. そのプロセスの LISTEN ポートを列挙
+ *     （macOS/Linux: lsof、Linux フォールバック: ss、Windows: netstat）
  *  3. 各ポートに X-Codeium-Csrf-Token 付きで
  *     /exa.language_server_pb.LanguageServerService/GetUserStatus を POST
  *     （http → https の順に試行。https は自己署名証明書）
@@ -43,8 +45,23 @@ interface ServerProcess {
   csrfToken: string;
 }
 
+const isWindows = process.platform === "win32";
+
+/** 「PID コマンドライン」を1行ずつ返す（psの pid=,command= と同じ形） */
+async function listProcessCommandLines(): Promise<string> {
+  if (isWindows) {
+    // wmic は新しいWindowsで廃止済みのため PowerShell + CIM を使う。
+    // cmd.exe の環境変数展開を避けるため % を含む WQL LIKE は使わない
+    return run(
+      'powershell -NoProfile -NonInteractive -Command "Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like \'*csrf_token*\' } | ForEach-Object { \'{0} {1}\' -f $_.ProcessId, $_.CommandLine }"',
+      15000 // PowerShellの起動が遅い環境を考慮
+    );
+  }
+  return run("ps -axo pid=,command=");
+}
+
 async function findServerProcesses(): Promise<ServerProcess[]> {
-  const out = await run("ps -axo pid=,command=");
+  const out = await listProcessCommandLines();
   const results: ServerProcess[] = [];
   for (const line of out.split("\n")) {
     if (!line.includes("language_server") || !line.includes("--csrf_token")) {
@@ -60,11 +77,44 @@ async function findServerProcesses(): Promise<ServerProcess[]> {
 }
 
 async function listenPorts(pid: number): Promise<number[]> {
-  const out = await run(`lsof -nP -iTCP -sTCP:LISTEN -a -p ${pid}`).catch(() => "");
+  if (isWindows) {
+    return listenPortsWindows(pid);
+  }
   const ports = new Set<number>();
+  const out = await run(`lsof -nP -iTCP -sTCP:LISTEN -a -p ${pid}`).catch(() => "");
   for (const line of out.split("\n")) {
     const m = line.match(/:(\d+)\s+\(LISTEN\)/);
     if (m) {
+      ports.add(Number(m[1]));
+    }
+  }
+  if (ports.size === 0 && process.platform === "linux") {
+    // lsof が入っていないLinux向けフォールバック
+    const out2 = await run("ss -ltnp").catch(() => "");
+    for (const line of out2.split("\n")) {
+      if (!line.includes(`pid=${pid},`)) {
+        continue;
+      }
+      const m = line.match(/\s\S+:(\d+)\s/);
+      if (m) {
+        ports.add(Number(m[1]));
+      }
+    }
+  }
+  return [...ports];
+}
+
+async function listenPortsWindows(pid: number): Promise<number[]> {
+  const out = await run("netstat -ano -p TCP", 10000).catch(() => "");
+  const ports = new Set<number>();
+  for (const line of out.split("\n")) {
+    // 例: "  TCP    127.0.0.1:42100    0.0.0.0:0    LISTENING    1234"
+    const m = line.match(/^\s*TCP\s+\S+:(\d+)\s+(\S+)\s+(\S+)\s+(\d+)\s*$/);
+    if (!m || Number(m[4]) !== pid) {
+      continue;
+    }
+    // 状態名がローカライズされる環境に備え、待ち受けの特徴（相手先 :0）でも判定する
+    if (m[3].toUpperCase().includes("LISTEN") || m[2].endsWith(":0")) {
       ports.add(Number(m[1]));
     }
   }

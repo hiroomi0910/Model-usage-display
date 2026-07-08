@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0 — 2026-07-08
+
+- **Windows対応**: プロセス検出を PowerShell（`Get-CimInstance`）、ポート列挙を `netstat` で行うようにした（従来は `ps` / `lsof` 前提でWindowsでは「接続不可」になっていた）
+- Linux向けに `lsof` が無い環境での `ss` フォールバックを追加（未検証）
+- README を「VSCode・VSCode系IDE全般で使える拡張」として再構成
+
 ## 1.0.0 — 2026-07-08
 
 初回リリース。
