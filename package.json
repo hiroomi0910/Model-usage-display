@@ -1,0 +1,85 @@
+{
+  "name": "model-usage-display",
+  "displayName": "Model Usage Display",
+  "description": "Antigravity IDE のモデル別クォータ残量・リセット時刻をステータスバーに表示",
+  "version": "1.0.0",
+  "publisher": "hiroomi",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "modelUsageDisplay.showDetails",
+        "title": "Model Usage: 詳細を表示"
+      },
+      {
+        "command": "modelUsageDisplay.refresh",
+        "title": "Model Usage: 今すぐ更新"
+      }
+    ],
+    "configuration": {
+      "title": "Model Usage Display",
+      "properties": {
+        "modelUsageDisplay.pollIntervalSeconds": {
+          "type": "number",
+          "default": 60,
+          "minimum": 10,
+          "description": "クォータの自動更新間隔（秒）"
+        },
+        "modelUsageDisplay.warnThresholdPercent": {
+          "type": "number",
+          "default": 30,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "この残量%以下でステータスバーを警告色にする"
+        },
+        "modelUsageDisplay.dangerThresholdPercent": {
+          "type": "number",
+          "default": 10,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "この残量%以下でステータスバーを危険色にする"
+        },
+        "modelUsageDisplay.notifyOnThreshold": {
+          "type": "boolean",
+          "default": true,
+          "description": "残量がしきい値を下回ったとき通知する"
+        },
+        "modelUsageDisplay.notifyOnReset": {
+          "type": "boolean",
+          "default": true,
+          "description": "クォータのリセット時刻になったとき通知する"
+        },
+        "modelUsageDisplay.hiddenModels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "非表示にするモデル名（グループ化後の表示名。例: \"GPT-OSS 120B\"）"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package --allow-missing-repository"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "1.74.0",
+    "@vscode/vsce": "^2.24.0",
+    "typescript": "^5.4.0"
+  }
+}

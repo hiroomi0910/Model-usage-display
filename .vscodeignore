@@ -1,0 +1,8 @@
+.vscode/**
+.claude/**
+src/**
+node_modules/**
+tsconfig.json
+**/*.map
+.DS_Store
+scripts/**
