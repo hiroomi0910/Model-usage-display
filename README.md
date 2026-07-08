@@ -4,6 +4,10 @@ Antigravity の各AIモデル（Gemini / Claude / GPT系）のクォータ残量
 
 *Shows per-model AI quota (remaining % and reset time) of Antigravity in the status bar. Works in VS Code, Antigravity IDE, and other VS Code-based editors.*
 
+> [!IMPORTANT]
+> **前提条件: Antigravity IDE が必須。**
+> この拡張はマシン上で動いている Antigravity の Language Server からクォータを取得する。そのため、どのエディタにインストールした場合でも、**同じマシンに [Antigravity IDE](https://antigravity.google/) がインストールされ、起動している（＝ログイン済みでLanguage Serverが動いている）ことが必要**。Antigravity が無い・起動していない環境では「Antigravity Language Server が見つかりません」というエラーになる。
+
 ## 機能
 
 - **ステータスバー**: 最も残量が少ないモデルの残量%を常時表示。ホバーで全モデルの一覧
@@ -42,7 +46,7 @@ Antigravity IDE が内部で起動している Language Server に直接接続�
 
 ### VSIX から（推奨）
 
-[Releases](../../releases) から `.vsix` をダウンロードし、お使いのエディタ（VSCode / Antigravity IDE / その他VSCode系IDE）で: 拡張機能ビュー → `…` メニュー → **VSIXからのインストール** → ダウンロードした `.vsix` を選択。
+事前に [Antigravity IDE](https://antigravity.google/) をインストールしておく（前提条件を参照）。その上で [Releases](../../releases) から `.vsix` をダウンロードし、お使いのエディタ（VSCode / Antigravity IDE / その他VSCode系IDE）で: 拡張機能ビュー → `…` メニュー → **VSIXからのインストール** → ダウンロードした `.vsix` を選択。
 
 またはCLIで（`code` の部分は各エディタのCLI名に読み替え）:
 

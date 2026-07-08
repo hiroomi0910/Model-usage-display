@@ -2,7 +2,7 @@
   "name": "model-usage-display",
   "displayName": "Model Usage Display",
   "description": "Antigravity のモデル別クォータ残量・リセット時刻をステータスバーに表示（VSCode・VSCode系IDE対応）",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "publisher": "hiroomi",
   "private": true,
   "license": "MIT",

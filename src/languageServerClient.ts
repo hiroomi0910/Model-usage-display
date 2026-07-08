@@ -230,7 +230,7 @@ export class LanguageServerClient {
     if (processes.length === 0) {
       throw new QuotaFetchError(
         "Antigravity Language Server が見つかりません",
-        "Antigravity IDE が起動しているか確認してください"
+        "この拡張には Antigravity IDE が必須です。このマシンに Antigravity IDE をインストールし、起動した状態で使用してください"
       );
     }
     const errors: string[] = [];

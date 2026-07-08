@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1 — 2026-07-08
+
+- README に前提条件（同一マシンに Antigravity IDE がインストール・起動済みであること）を明記
+- Language Server が見つからない場合のエラーメッセージを、Antigravity IDE 未インストール環境でも原因がわかる文言に変更
+
 ## 1.1.0 — 2026-07-08
 
 - **Windows対応**: プロセス検出を PowerShell（`Get-CimInstance`）、ポート列挙を `netstat` で行うようにした（従来は `ps` / `lsof` 前提でWindowsでは「接続不可」になっていた）
