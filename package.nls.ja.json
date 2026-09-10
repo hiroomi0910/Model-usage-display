@@ -1,0 +1,10 @@
+{
+  "command.showDetails.title": "Model Usage: 詳細を表示",
+  "command.refresh.title": "Model Usage: 今すぐ更新",
+  "config.pollIntervalSeconds": "クォータの自動更新間隔（秒）",
+  "config.warnThresholdPercent": "この残量%以下でステータスバーを警告色にする",
+  "config.dangerThresholdPercent": "この残量%以下でステータスバーを危険色にする",
+  "config.notifyOnThreshold": "残量がしきい値を下回ったとき通知する",
+  "config.notifyOnReset": "クォータのリセット時刻になったとき通知する",
+  "config.hiddenModels": "非表示にするモデル名（グループ化後の表示名。例: \"GPT-OSS 120B\"）"
+}

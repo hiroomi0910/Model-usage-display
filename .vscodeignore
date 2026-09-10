@@ -1,9 +1,12 @@
 .vscode/**
 .claude/**
+.github/**
 images/icon.svg
 src/**
 node_modules/**
 tsconfig.json
 **/*.map
+**/*.vsix
 .DS_Store
 scripts/**
+.gitignore

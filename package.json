@@ -1,43 +1,57 @@
 {
   "name": "model-usage-display",
   "displayName": "Model Usage Display",
-  "description": "Antigravity のモデル別クォータ残量・リセット時刻をステータスバーに表示（VSCode・VSCode系IDE対応）",
-  "version": "1.1.1",
+  "description": "Status bar display of remaining AI model quota (Gemini / Claude / GPT) from Antigravity, with a per-model dashboard and reset-time notifications. Unofficial.",
+  "version": "1.2.0",
   "publisher": "hiroomi",
-  "private": true,
   "license": "MIT",
+  "homepage": "https://github.com/hiroomi0910/Model-usage-display#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/hiroomi0910/Model-usage-display.git"
   },
+  "bugs": {
+    "url": "https://github.com/hiroomi0910/Model-usage-display/issues"
+  },
+  "qna": "marketplace",
+  "pricing": "Free",
   "keywords": [
     "antigravity",
     "quota",
     "usage",
     "statusbar",
     "gemini",
-    "claude"
+    "claude",
+    "gpt",
+    "ai",
+    "rate limit"
   ],
   "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#141926",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.74.0"
   },
   "categories": [
+    "Visualization",
     "Other"
   ],
   "activationEvents": [
     "onStartupFinished"
   ],
   "main": "./out/extension.js",
+  "l10n": "./l10n",
   "contributes": {
     "commands": [
       {
         "command": "modelUsageDisplay.showDetails",
-        "title": "Model Usage: 詳細を表示"
+        "title": "%command.showDetails.title%"
       },
       {
         "command": "modelUsageDisplay.refresh",
-        "title": "Model Usage: 今すぐ更新"
+        "title": "%command.refresh.title%"
       }
     ],
     "configuration": {
@@ -47,31 +61,31 @@
           "type": "number",
           "default": 60,
           "minimum": 10,
-          "description": "クォータの自動更新間隔（秒）"
+          "description": "%config.pollIntervalSeconds%"
         },
         "modelUsageDisplay.warnThresholdPercent": {
           "type": "number",
           "default": 30,
           "minimum": 0,
           "maximum": 100,
-          "description": "この残量%以下でステータスバーを警告色にする"
+          "description": "%config.warnThresholdPercent%"
         },
         "modelUsageDisplay.dangerThresholdPercent": {
           "type": "number",
           "default": 10,
           "minimum": 0,
           "maximum": 100,
-          "description": "この残量%以下でステータスバーを危険色にする"
+          "description": "%config.dangerThresholdPercent%"
         },
         "modelUsageDisplay.notifyOnThreshold": {
           "type": "boolean",
           "default": true,
-          "description": "残量がしきい値を下回ったとき通知する"
+          "description": "%config.notifyOnThreshold%"
         },
         "modelUsageDisplay.notifyOnReset": {
           "type": "boolean",
           "default": true,
-          "description": "クォータのリセット時刻になったとき通知する"
+          "description": "%config.notifyOnReset%"
         },
         "modelUsageDisplay.hiddenModels": {
           "type": "array",
@@ -79,7 +93,7 @@
             "type": "string"
           },
           "default": [],
-          "description": "非表示にするモデル名（グループ化後の表示名。例: \"GPT-OSS 120B\"）"
+          "description": "%config.hiddenModels%"
         }
       }
     }
@@ -87,7 +101,7 @@
   "scripts": {
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "package": "vsce package --allow-missing-repository"
+    "package": "vsce package"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

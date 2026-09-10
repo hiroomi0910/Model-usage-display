@@ -229,8 +229,9 @@ export class LanguageServerClient {
     const processes = await findServerProcesses();
     if (processes.length === 0) {
       throw new QuotaFetchError(
-        "Antigravity Language Server が見つかりません",
-        "この拡張には Antigravity IDE が必須です。このマシンに Antigravity IDE をインストールし、起動した状態で使用してください"
+        "serverNotFound",
+        "Antigravity Language Server not found",
+        "Antigravity IDE is required and must be running"
       );
     }
     const errors: string[] = [];
@@ -250,8 +251,9 @@ export class LanguageServerClient {
       }
     }
     throw new QuotaFetchError(
-      "Language Server に接続できませんでした",
-      `試行結果: ${errors.slice(0, 3).join(" / ") || "LISTENポートなし"}`
+      "connectionFailed",
+      "Could not connect to the Language Server",
+      errors.slice(0, 3).join(" / ") || "no listening ports"
     );
   }
 }

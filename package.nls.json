@@ -1,0 +1,10 @@
+{
+  "command.showDetails.title": "Model Usage: Show Details",
+  "command.refresh.title": "Model Usage: Refresh Now",
+  "config.pollIntervalSeconds": "How often the quota is refreshed automatically (seconds)",
+  "config.warnThresholdPercent": "Show the status bar in the warning color at or below this remaining percentage",
+  "config.dangerThresholdPercent": "Show the status bar in the danger color at or below this remaining percentage",
+  "config.notifyOnThreshold": "Notify when a model's remaining quota drops below a threshold",
+  "config.notifyOnReset": "Notify when the model quota reset time is reached",
+  "config.hiddenModels": "Model names to hide (the grouped display name, e.g. \"GPT-OSS 120B\")"
+}

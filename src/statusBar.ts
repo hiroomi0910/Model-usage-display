@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { describeError } from "./errorText";
 import { bar, localTime, lowestModel, percent, untilReset } from "./format";
 import { QuotaUpdate } from "./quotaService";
 import { ModelQuota } from "./types";
@@ -24,13 +25,17 @@ export class QuotaStatusBar implements vscode.Disposable {
     const config = vscode.workspace.getConfiguration("modelUsageDisplay");
     const warnPct = config.get<number>("warnThresholdPercent", 30);
     const dangerPct = config.get<number>("dangerThresholdPercent", 10);
+    const resetLabel = vscode.l10n.t("Reset");
 
     if (!update.snapshot) {
-      this.item.text = "$(warning) Models: 接続不可";
+      this.item.text = `$(warning) ${vscode.l10n.t("Models: Unavailable")}`;
       this.item.backgroundColor = new vscode.ThemeColor("statusBarItem.warningBackground");
-      this.item.tooltip = update.error
-        ? `${update.error.message}\n${(update.error as any).hint ?? ""}`
-        : "クォータ情報を取得できません";
+      if (update.error) {
+        const { message, hint } = describeError(update.error);
+        this.item.tooltip = hint ? `${message}\n${hint}` : message;
+      } else {
+        this.item.tooltip = vscode.l10n.t("Quota information is unavailable");
+      }
       return;
     }
 
@@ -39,7 +44,7 @@ export class QuotaStatusBar implements vscode.Disposable {
     if (!lowest) {
       this.item.text = "$(zap) Models: -";
       this.item.backgroundColor = undefined;
-      this.item.tooltip = "表示対象のモデルがありません";
+      this.item.tooltip = vscode.l10n.t("No models to display");
       return;
     }
 
@@ -58,14 +63,21 @@ export class QuotaStatusBar implements vscode.Disposable {
     for (const m of models) {
       md.appendMarkdown(
         `${m.label}  \n\`${bar(m.remainingFraction)}\` ${percent(m.remainingFraction)}%` +
-          (m.resetTime ? `  ↻ ${untilReset(m.resetTime)} (${localTime(m.resetTime)})` : "") +
+          (m.resetTime
+            ? `  ↻ ${untilReset(m.resetTime, { resetLabel })} (${localTime(m.resetTime)})`
+            : "") +
           "\n\n"
       );
     }
     if (update.error) {
-      md.appendMarkdown(`⚠ 最終更新に失敗（前回値を表示中）: ${update.error.message}\n\n`);
+      md.appendMarkdown(
+        vscode.l10n.t(
+          "⚠ Last refresh failed (showing previous values): {0}",
+          describeError(update.error).message
+        ) + "\n\n"
+      );
     }
-    md.appendMarkdown(`_更新: ${localTime(update.snapshot.fetchedAt)}_`);
+    md.appendMarkdown(`_${vscode.l10n.t("Updated: {0}", localTime(update.snapshot.fetchedAt))}_`);
     this.item.tooltip = md;
   }
 

@@ -1,0 +1,19 @@
+{
+  "Reset": "リセット済",
+  "Models: Unavailable": "Models: 接続不可",
+  "Quota information is unavailable": "クォータ情報を取得できていません",
+  "No models to display": "表示対象のモデルがありません",
+  "⚠ Last refresh failed (showing previous values): {0}": "⚠ 最終更新に失敗（前回値を表示中）: {0}",
+  "Updated: {0}": "更新: {0}",
+  "Refresh now": "今すぐ更新",
+  "Resets in {0} ({1})": "リセットまで {0}（{1}）",
+  "Fetch error": "取得エラー",
+  "Models — updated {0}": "Models — 最終更新 {0}",
+  "⛔ {0} is at {1}% remaining": "⛔ {0} の残量が {1}% です",
+  "⚠ {0} is at {1}% remaining": "⚠ {0} の残量が {1}% です",
+  "🔄 Model quota reset time ({0}) has arrived": "🔄 モデルクォータのリセット時刻（{0}）になりました",
+  "Antigravity Language Server not found": "Antigravity Language Server が見つかりません",
+  "This extension requires Antigravity IDE. Install it on this machine and keep it running.": "この拡張には Antigravity IDE が必須です。このマシンにインストールし、起動した状態で使用してください",
+  "Could not connect to the Language Server": "Language Server に接続できませんでした",
+  "Attempts: {0}": "試行結果: {0}"
+}

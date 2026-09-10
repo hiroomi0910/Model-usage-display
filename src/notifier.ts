@@ -48,9 +48,13 @@ export class QuotaNotifier implements vscode.Disposable {
       const prevPct = percent(prev.remainingFraction);
       const pct = percent(m.remainingFraction);
       if (prevPct > danger && pct <= danger) {
-        void vscode.window.showWarningMessage(`⛔ ${m.label} の残量が ${pct}% です`);
+        void vscode.window.showWarningMessage(
+          vscode.l10n.t("⛔ {0} is at {1}% remaining", m.label, pct)
+        );
       } else if (prevPct > warn && pct <= warn) {
-        void vscode.window.showWarningMessage(`⚠ ${m.label} の残量が ${pct}% です`);
+        void vscode.window.showWarningMessage(
+          vscode.l10n.t("⚠ {0} is at {1}% remaining", m.label, pct)
+        );
       }
     }
   }
@@ -75,13 +79,15 @@ export class QuotaNotifier implements vscode.Disposable {
     const delay = Math.min(target - now, 2 ** 31 - 1);
     this.resetTimer = setTimeout(() => {
       this.notifiedResetAt = target;
+      // 通知の選択肢は表示と判定で同じ文字列を使う
+      const refreshAction = vscode.l10n.t("Refresh now");
       void vscode.window
         .showInformationMessage(
-          `🔄 モデルクォータのリセット時刻（${localTime(new Date(target))}）になりました`,
-          "今すぐ更新"
+          vscode.l10n.t("🔄 Model quota reset time ({0}) has arrived", localTime(new Date(target))),
+          refreshAction
         )
         .then((choice) => {
-          if (choice === "今すぐ更新") {
+          if (choice === refreshAction) {
             void this.service.refresh();
           }
         });

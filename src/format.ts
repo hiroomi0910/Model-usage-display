@@ -10,14 +10,21 @@ export function bar(fraction: number, width = 10): string {
   return "■".repeat(filled) + "□".repeat(width - filled);
 }
 
-/** リセットまでの残り時間を "3h21m" 形式で返す。過去なら "リセット済" */
-export function untilReset(resetTime: Date | undefined, now = new Date()): string {
+/**
+ * リセットまでの残り時間を "3h21m" 形式で返す。過去なら resetLabel を返す。
+ * このモジュールを vscode 非依存に保つため、文言は呼び出し側から受け取る。
+ */
+export function untilReset(
+  resetTime: Date | undefined,
+  opts: { resetLabel?: string; now?: Date } = {}
+): string {
+  const { resetLabel = "Reset", now = new Date() } = opts;
   if (!resetTime) {
     return "-";
   }
   const ms = resetTime.getTime() - now.getTime();
   if (ms <= 0) {
-    return "リセット済";
+    return resetLabel;
   }
   const totalMinutes = Math.ceil(ms / 60000);
   const h = Math.floor(totalMinutes / 60);

@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # シークレット未登録の間、公開ステップを自動スキップするために job レベルで env に流す
+    # （step レベルの env はその step 自身の if からは参照できないため）
+    env:
+      OVSX_PAT: ${{ secrets.OVSX_PAT }}
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Verify tag matches package.json version
+        id: version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$pkg" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $pkg"
+            exit 1
+          fi
+          echo "version=$pkg" >> "$GITHUB_OUTPUT"
+          echo "vsix=model-usage-display-$pkg.vsix" >> "$GITHUB_OUTPUT"
+
+      - name: Compile
+        run: npm run compile
+
+      - name: Check localization coverage
+        run: node scripts/check-l10n.js
+
+      # 公開シークレットの有無に関わらず Release に添付できるよう、パッケージングは自前で行う
+      - name: Package VSIX
+        run: npx vsce package --out "${{ steps.version.outputs.vsix }}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.version.outputs.vsix }}
+          generate_release_notes: true
+
+      - name: Publish to Open VSX
+        if: env.OVSX_PAT != ''
+        uses: HaaLeo/publish-vscode-extension@v2
+        with:
+          pat: ${{ secrets.OVSX_PAT }}
+          extensionFile: ${{ steps.version.outputs.vsix }}
+
+      - name: Publish to Visual Studio Marketplace
+        if: env.VSCE_PAT != ''
+        uses: HaaLeo/publish-vscode-extension@v2
+        with:
+          pat: ${{ secrets.VSCE_PAT }}
+          registryUrl: https://marketplace.visualstudio.com
+          extensionFile: ${{ steps.version.outputs.vsix }}
