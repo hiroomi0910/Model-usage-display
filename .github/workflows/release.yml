@@ -44,6 +44,10 @@ jobs:
       - name: Check localization coverage
         run: node scripts/check-l10n.js
 
+      # CHANGELOG に該当バージョンの節が無ければここで止まる
+      - name: Extract release notes from CHANGELOG
+        run: node scripts/release-notes.js "${{ steps.version.outputs.version }}" > "$RUNNER_TEMP/release-notes.md"
+
       # 公開シークレットの有無に関わらず Release に添付できるよう、パッケージングは自前で行う
       - name: Package VSIX
         run: npx vsce package --out "${{ steps.version.outputs.vsix }}"
@@ -52,7 +56,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ steps.version.outputs.vsix }}
-          generate_release_notes: true
+          body_path: ${{ runner.temp }}/release-notes.md
 
       - name: Publish to Open VSX
         if: env.OVSX_PAT != ''

@@ -24,5 +24,8 @@ jobs:
       - name: Check localization coverage
         run: node scripts/check-l10n.js
 
+      - name: Check release notes for current version
+        run: node scripts/release-notes.js "$(node -p "require('./package.json').version")" > /dev/null
+
       - name: Package VSIX (smoke test)
         run: npx vsce package --out /tmp/smoke.vsix
