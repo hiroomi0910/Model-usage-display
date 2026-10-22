@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.1 — 2026-10-22
+
+セキュリティ対応のメンテナンスリリース。拡張機能の動作に変更はありません。
+
+- GitHub Actions（CI・リリース）の Node.js を、サポートが終了した 20 から 24 に更新
+- 開発用依存の脆弱性を修正（`npm audit fix` で brace-expansion・qs・undici を更新）
+
 ## 1.2.0 — 2026-09-11
 
 マーケットプレイス（Open VSX / Visual Studio Marketplace）公開のための準備。

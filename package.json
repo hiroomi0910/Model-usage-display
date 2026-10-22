@@ -2,7 +2,7 @@
   "name": "model-usage-display",
   "displayName": "Model Usage Display",
   "description": "Status bar display of remaining AI model quota (Gemini / Claude / GPT) from Antigravity, with a per-model dashboard and reset-time notifications. Unofficial.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "publisher": "hiroomi",
   "license": "MIT",
   "homepage": "https://github.com/hiroomi0910/Model-usage-display#readme",
