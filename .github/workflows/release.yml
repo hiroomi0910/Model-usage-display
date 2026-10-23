@@ -4,18 +4,26 @@ on:
   push:
     tags:
       - "v*"
+  # Marketplace の発行者メンバーに登録するマネージドIDのIDを調べるときに手動で実行する
+  workflow_dispatch:
 
 permissions:
   contents: write
+  # Microsoft Entra ID へのフェデレーションサインイン（OIDC）に必要
+  id-token: write
 
 jobs:
   release:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    # Azure のフェデレーション資格情報は、この environment 名を subject にして信頼する
+    environment: marketplace
     # シークレット未登録の間、公開ステップを自動スキップするために job レベルで env に流す
     # （step レベルの env はその step 自身の if からは参照できないため）
     env:
       OVSX_PAT: ${{ secrets.OVSX_PAT }}
-      VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -65,10 +73,35 @@ jobs:
           pat: ${{ secrets.OVSX_PAT }}
           extensionFile: ${{ steps.version.outputs.vsix }}
 
-      - name: Publish to Visual Studio Marketplace
-        if: env.VSCE_PAT != ''
-        uses: HaaLeo/publish-vscode-extension@v2
+      # Azure DevOps の全組織対象 PAT は 2026-03-15 以降新規作成できず、2026-12-01 に廃止されるため、
+      # Marketplace へは Microsoft Entra ID（マネージドID + フェデレーション資格情報）で公開する
+      - name: Sign in to Microsoft Entra ID
+        if: env.AZURE_CLIENT_ID != ''
+        uses: azure/login@v2
         with:
-          pat: ${{ secrets.VSCE_PAT }}
-          registryUrl: https://marketplace.visualstudio.com
-          extensionFile: ${{ steps.version.outputs.vsix }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          allow-no-subscriptions: true
+
+      - name: Publish to Visual Studio Marketplace
+        if: env.AZURE_CLIENT_ID != ''
+        run: npx vsce publish --packagePath "${{ steps.version.outputs.vsix }}" --azure-credential
+
+  # 手動実行専用: マネージドIDの Marketplace 上のIDを表示する（発行者の Members に Contributor として追加する値）
+  marketplace-identity:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: marketplace
+    steps:
+      - name: Sign in to Microsoft Entra ID
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          allow-no-subscriptions: true
+
+      - name: Show the identity ID for the Marketplace publisher
+        run: |
+          id="$(az rest -u https://app.vssps.visualstudio.com/_apis/profile/profiles/me --resource 499b84ac-1321-427f-aa17-267ca6975798 --query id -o tsv)"
+          echo "Marketplace identity ID: $id"
+          echo "Marketplace の発行者 hiroomi の Members に、次のIDを Contributor として追加してください: \`$id\`" >> "$GITHUB_STEP_SUMMARY"
