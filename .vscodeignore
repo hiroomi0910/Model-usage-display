@@ -10,3 +10,4 @@ tsconfig.json
 .DS_Store
 scripts/**
 .gitignore
+CLAUDE.md
