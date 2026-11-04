@@ -31,7 +31,7 @@ Gemini 3.1 Pro
 
 Antigravity IDE が内部で起動している Language Server に直接接続してクォータを取得する（追加ログイン不要・ローカル完結）:
 
-1. プロセス一覧から `language_server` を探し `--csrf_token` を抽出
+1. プロセス一覧から `language_server`（新しい版の Antigravity では `agy`）を探し `--csrf_token` を抽出
    （macOS/Linux: `ps`、Windows: PowerShell `Get-CimInstance`）
 2. そのプロセスの LISTEN ポートを列挙
    （macOS/Linux: `lsof`、Windows: `netstat`）

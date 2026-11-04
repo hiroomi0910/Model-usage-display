@@ -31,7 +31,7 @@ Gemini 3.1 Pro
 
 It connects directly to the Language Server that Antigravity IDE runs internally — no extra sign-in, everything stays local:
 
-1. Find `language_server` in the process list and extract `--csrf_token`
+1. Find `language_server` (`agy` in newer Antigravity versions) in the process list and extract `--csrf_token`
    (macOS/Linux: `ps`, Windows: PowerShell `Get-CimInstance`)
 2. Enumerate that process's listening ports
    (macOS/Linux: `lsof`, Windows: `netstat`)

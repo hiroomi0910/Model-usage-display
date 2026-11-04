@@ -2,7 +2,7 @@
  * Antigravity Language Server への接続とクォータ取得。
  *
  * 仕組み（antigravity-usage / AntigravityQuotaWatcher の実装を参考）:
- *  1. プロセス一覧から language_server を探し --csrf_token を抜き出す
+ *  1. プロセス一覧から language_server（新しい版では agy）を探し --csrf_token を抜き出す
  *     （macOS/Linux: ps、Windows: PowerShell の Get-CimInstance）
  *  2. そのプロセスの LISTEN ポートを列挙
  *     （macOS/Linux: lsof、Linux フォールバック: ss、Windows: netstat）
@@ -18,6 +18,14 @@ import * as https from "https";
 import { ModelQuota, QuotaFetchError, QuotaSnapshot } from "./types";
 
 const RPC_PATH = "/exa.language_server_pb.LanguageServerService/GetUserStatus";
+
+/**
+ * Language Server のプロセスとみなすコマンドライン。
+ * 旧版は `language_server_macos_arm` などの名前で動く。
+ * 新しい版（Language Server 2.29 以降）は `~/.gemini/bin/agy --hub` として動き、
+ * プロセス名に language_server を含まない。
+ */
+const SERVER_PROCESS_PATTERN = /language_server|[\\/]agy(?:\.exe)?(?:\s|$)/;
 const RPC_BODY = JSON.stringify({
   metadata: { ideName: "antigravity", extensionName: "antigravity", locale: "en" },
 });
@@ -64,7 +72,7 @@ async function findServerProcesses(): Promise<ServerProcess[]> {
   const out = await listProcessCommandLines();
   const results: ServerProcess[] = [];
   for (const line of out.split("\n")) {
-    if (!line.includes("language_server") || !line.includes("--csrf_token")) {
+    if (!SERVER_PROCESS_PATTERN.test(line) || !line.includes("--csrf_token")) {
       continue;
     }
     const pidMatch = line.match(/^\s*(\d+)\s/);
