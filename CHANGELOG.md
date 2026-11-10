@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.3 — 2026-11-10
+
+公開まわりのメンテナンスリリース。拡張機能の動作に変更はありません。
+
+- Visual Studio Marketplace への公開を Microsoft Entra ID 認証で行う（Azure DevOps の全組織対象 PAT が 2026-12-01 に廃止されるため。ワークフローは 1.2.2 で切り替え済みだったが、設定が間に合わず 1.2.2 は Marketplace に公開されなかった）。このバージョンで Open VSX と Marketplace の両方に公開する
+- リリースの再実行で、公開済みのバージョンを飛ばすようにした（Open VSX は `skipDuplicate`、Marketplace は `--skip-duplicate`）
+
 ## 1.2.2 — 2026-11-04
 
 - **新しい Antigravity で「Antigravity Language Server が見つかりません」になる問題を修正**。Language Server 2.29 以降はプロセスが `~/.gemini/bin/agy --hub` として動き、名前に `language_server` を含まないため検出できていなかった。`agy`（Windows では `agy.exe`）のプロセスも検出するようにした。旧版の検出はそのまま
