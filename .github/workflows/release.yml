@@ -66,12 +66,14 @@ jobs:
           files: ${{ steps.version.outputs.vsix }}
           body_path: ${{ runner.temp }}/release-notes.md
 
+      # 片方だけ公開に失敗したリリースを再実行できるよう、公開済みのバージョンは飛ばす
       - name: Publish to Open VSX
         if: env.OVSX_PAT != ''
         uses: HaaLeo/publish-vscode-extension@v2
         with:
           pat: ${{ secrets.OVSX_PAT }}
           extensionFile: ${{ steps.version.outputs.vsix }}
+          skipDuplicate: true
 
       # Azure DevOps の全組織対象 PAT は 2026-03-15 以降新規作成できず、2026-12-01 に廃止されるため、
       # Marketplace へは Microsoft Entra ID（マネージドID + フェデレーション資格情報）で公開する
@@ -85,7 +87,7 @@ jobs:
 
       - name: Publish to Visual Studio Marketplace
         if: env.AZURE_CLIENT_ID != ''
-        run: npx vsce publish --packagePath "${{ steps.version.outputs.vsix }}" --azure-credential
+        run: npx vsce publish --packagePath "${{ steps.version.outputs.vsix }}" --azure-credential --skip-duplicate
 
   # 手動実行専用: マネージドIDの Marketplace 上のIDを表示する（発行者の Members に Contributor として追加する値）
   marketplace-identity:
