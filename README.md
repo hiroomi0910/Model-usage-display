@@ -20,10 +20,10 @@ Keeps the remaining quota and time-until-reset of each Antigravity AI model (Gem
 ```
 Models
 ──────────
-Claude Opus 4.6
+Claude Opus 5.5
 ■■■■□□□□□□ 45%  ↻ 3h21m
 
-Gemini 3.1 Pro
+Gemini 4 Hydrogen
 ■■■■■■■□□□ 71%  ↻ 2h05m
 ```
 
@@ -41,7 +41,7 @@ It connects directly to the Language Server that Antigravity IDE runs internally
 
 Because these internals are unstable, the extension displays the `remainingFraction` / `resetTime` the server returns as-is and does not try to interpret quota semantics (5-hour rolling windows, weekly caps, and so on).
 
-Variants sharing one quota pool (for example `Gemini 3.5 Flash (Low/Medium/High)`) are collapsed into a single group.
+Variants sharing one quota pool (for example `Gemini 4 Hydrogen (Low/Medium/High/XHigh)`) are collapsed into a single group.
 
 ## Installation
 

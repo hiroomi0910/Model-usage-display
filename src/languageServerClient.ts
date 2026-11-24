@@ -192,7 +192,7 @@ function rpcRequest(endpoint: Endpoint, timeoutMs = 5000): Promise<unknown> {
   });
 }
 
-/** "Claude Opus 4.6 (Thinking)" → "Claude Opus 4.6" のようにバリアント表記を除去 */
+/** "Claude Opus 5.5 (High)" → "Claude Opus 5.5" のようにバリアント表記を除去 */
 function groupLabel(label: string): string {
   return label.replace(/\s*\([^)]*\)\s*$/, "").trim();
 }

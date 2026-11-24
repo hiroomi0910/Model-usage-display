@@ -20,10 +20,10 @@ Antigravity の各AIモデル（Gemini / Claude / GPT系）のクォータ残量
 ```
 Models
 ──────────
-Claude Opus 4.6
+Claude Opus 5.5
 ■■■■□□□□□□ 45%  ↻ 3h21m
 
-Gemini 3.1 Pro
+Gemini 4 Hydrogen
 ■■■■■■■□□□ 71%  ↻ 2h05m
 ```
 
@@ -41,7 +41,7 @@ Antigravity IDE が内部で起動している Language Server に直接接続�
 
 内部仕様は流動的なため、サーバーが返す `remainingFraction` / `resetTime` をそのまま表示し、クォータの意味論（5時間ローリング・週次上限など）の解釈はしない。
 
-同一クォータプールのバリアント（例: `Gemini 3.5 Flash (Low/Medium/High)`）は1つのグループにまとめて表示する。
+同一クォータプールのバリアント（例: `Gemini 4 Hydrogen (Low/Medium/High/XHigh)`）は1つのグループにまとめて表示する。
 
 ## インストール
 
