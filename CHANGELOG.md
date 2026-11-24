@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.5 — 2026-11-25
+
+ドキュメントの更新のみ。拡張機能の動作に変更はありません。
+
+- README の表示例とグループ表示の例のモデル名を、今の Antigravity が返す一覧（Claude Opus 5.5、Gemini 4 Hydrogen など）に合わせて更新
+
 ## 1.2.4 — 2026-11-24
 
 - **新しい Antigravity で「Language Server に接続できません」になる問題を修正**。Antigravity 2.34 前後から、CSRF トークンがコマンドラインの `--csrf_token` ではなく環境変数 `ANTIGRAVITY_SERVER_CSRF_TOKEN` で渡されるようになり、トークンを見つけられなくなっていた。コマンドラインに無いときは `ps eww` で環境変数から読むようにした（macOS/Linux）。旧版の検出はそのまま
