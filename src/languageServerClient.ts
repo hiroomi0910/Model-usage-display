@@ -4,6 +4,7 @@
  * 仕組み（antigravity-usage / AntigravityQuotaWatcher の実装を参考）:
  *  1. プロセス一覧から language_server（新しい版では agy）を探し --csrf_token を抜き出す
  *     （macOS/Linux: ps、Windows: PowerShell の Get-CimInstance）
+ *     コマンドラインに無ければ環境変数 ANTIGRAVITY_SERVER_CSRF_TOKEN から読む（macOS/Linux のみ）
  *  2. そのプロセスの LISTEN ポートを列挙
  *     （macOS/Linux: lsof、Linux フォールバック: ss、Windows: netstat）
  *  3. 各ポートに X-Codeium-Csrf-Token 付きで
@@ -68,17 +69,36 @@ async function listProcessCommandLines(): Promise<string> {
   return run("ps -axo pid=,command=");
 }
 
+/**
+ * 新しい版（Antigravity 2.34 前後〜）はトークンをコマンドラインに載せず、
+ * 環境変数 ANTIGRAVITY_SERVER_CSRF_TOKEN で渡す。
+ * macOS/Linux では同じユーザーのプロセスなら `ps eww` で環境変数を読める。
+ * Windows は他プロセスの環境変数を手軽に読む手段がないため未対応。
+ */
+async function readTokenFromEnvironment(pid: number): Promise<string | undefined> {
+  if (isWindows) {
+    return undefined;
+  }
+  const out = await run(`ps eww -o command= -p ${pid}`).catch(() => "");
+  return out.match(/(?:^|\s)ANTIGRAVITY_SERVER_CSRF_TOKEN=([\w-]+)/)?.[1];
+}
+
 async function findServerProcesses(): Promise<ServerProcess[]> {
   const out = await listProcessCommandLines();
   const results: ServerProcess[] = [];
   for (const line of out.split("\n")) {
-    if (!SERVER_PROCESS_PATTERN.test(line) || !line.includes("--csrf_token")) {
+    if (!SERVER_PROCESS_PATTERN.test(line)) {
       continue;
     }
     const pidMatch = line.match(/^\s*(\d+)\s/);
-    const tokenMatch = line.match(/--csrf_token[= ]([\w-]+)/);
-    if (pidMatch && tokenMatch) {
-      results.push({ pid: Number(pidMatch[1]), csrfToken: tokenMatch[1] });
+    if (!pidMatch) {
+      continue;
+    }
+    const pid = Number(pidMatch[1]);
+    const csrfToken =
+      line.match(/--csrf_token[= ]([\w-]+)/)?.[1] ?? (await readTokenFromEnvironment(pid));
+    if (csrfToken) {
+      results.push({ pid, csrfToken });
     }
   }
   return results;

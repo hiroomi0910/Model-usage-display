@@ -32,7 +32,8 @@ Gemini 3.1 Pro
 It connects directly to the Language Server that Antigravity IDE runs internally — no extra sign-in, everything stays local:
 
 1. Find `language_server` (`agy` in newer Antigravity versions) in the process list and extract `--csrf_token`
-   (macOS/Linux: `ps`, Windows: PowerShell `Get-CimInstance`)
+   (macOS/Linux: `ps`, Windows: PowerShell `Get-CimInstance`).
+   Newer versions pass the token in the `ANTIGRAVITY_SERVER_CSRF_TOKEN` environment variable instead, which is read with `ps eww` (macOS/Linux only)
 2. Enumerate that process's listening ports
    (macOS/Linux: `lsof`, Windows: `netstat`)
 3. POST the Connect RPC `/exa.language_server_pb.LanguageServerService/GetUserStatus`
@@ -88,7 +89,7 @@ npm run package   # produces model-usage-display-x.y.z.vsix
 ## Supported environments
 
 - **Editors**: VS Code 1.74 or later, plus VS Code-based IDEs such as Antigravity IDE. Quota comes from the Antigravity Language Server process running on the machine rather than from the editor itself, so **Antigravity IDE must be running** regardless of which editor you use
-- **OS**: macOS and Windows (both verified). Linux is implemented but untested
+- **OS**: macOS and Windows (both verified). Linux is implemented but untested. On Windows, newer Antigravity versions that pass the token via an environment variable are not supported yet
 - **Display language**: English (default) and Japanese, following your editor's display language
 
 ## Limitations and disclaimer

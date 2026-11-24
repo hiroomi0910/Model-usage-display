@@ -32,7 +32,8 @@ Gemini 3.1 Pro
 Antigravity IDE が内部で起動している Language Server に直接接続してクォータを取得する（追加ログイン不要・ローカル完結）:
 
 1. プロセス一覧から `language_server`（新しい版の Antigravity では `agy`）を探し `--csrf_token` を抽出
-   （macOS/Linux: `ps`、Windows: PowerShell `Get-CimInstance`）
+   （macOS/Linux: `ps`、Windows: PowerShell `Get-CimInstance`）。
+   新しい版はトークンを環境変数 `ANTIGRAVITY_SERVER_CSRF_TOKEN` で渡すので、`ps eww` で読む（macOS/Linux のみ）
 2. そのプロセスの LISTEN ポートを列挙
    （macOS/Linux: `lsof`、Windows: `netstat`）
 3. 各ポートに `X-Codeium-Csrf-Token` ヘッダー付きで Connect RPC
@@ -88,7 +89,7 @@ npm run package   # model-usage-display-x.y.z.vsix が生成される
 ## 対応環境
 
 - **エディタ**: VSCode 1.74以降、および Antigravity IDE 等のVSCode系IDE。クォータの取得元はエディタ自身ではなく「マシン上で動いているAntigravityのLanguage Serverプロセス」なので、どのエディタから使う場合も **Antigravity IDE が起動していることが前提**
-- **OS**: macOS・Windows（いずれも動作確認済み）。Linuxは実装済みだが未検証
+- **OS**: macOS・Windows（いずれも動作確認済み）。Linuxは実装済みだが未検証。Windows では、トークンを環境変数で渡す新しい版の Antigravity にはまだ対応していない
 - **表示言語**: 英語（既定）と日本語。エディタの表示言語に追従する
 
 ## 制約・免責
